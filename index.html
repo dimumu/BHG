@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>대한전략사관학교</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+    body {
+      font-family: 'Pretendard', sans-serif;
+    }
+    /* Custom scrollbar for webkit */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #d1d5db;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #9ca3af;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="module">
+import React, { useState } from 'https://esm.sh/react@18.2.0';
+import ReactDOM from 'https://esm.sh/react-dom@18.2.0/client';
+import { motion, AnimatePresence } from 'https://esm.sh/framer-motion@10.16.4?deps=react@18.2.0,react-dom@18.2.0';
+import { FileText, User, Shield, AlertTriangle, X, Fingerprint, Activity, Database, ChevronRight, ChevronDown, Target, Lock, Info, Megaphone, Globe, Type, Minus, Plus, Award, MessageCircle, Menu, CalendarCheck, CalendarDays, HeartHandshake, FileSearch, Coins, Download, LogIn, UserPlus } from 'https://esm.sh/lucide-react@0.292.0?deps=react@18.2.0,react-dom@18.2.0';
+
+    // --- Types & Data ---
+    const NOTICE_DATA = [
+      {
+        id: 1,
+        category: "공지",
+        title: "12월 기말평가(특별훈련) 기간 교내 시설 이용 통제 안내",
+        date: "2071.11.25",
+        content: `안녕하십니까, 대한전략사관학교 교무처입니다.\n\n본교는 다가오는 12월 1일부터 12월 15일까지 2071학년도 2학기 기말평가 및 특별훈련을 실시합니다.\n이 기간 동안 생도들의 집중력 향상과 보안 유지를 위해 다음과 같이 교내 시설 이용이 통제됩니다.\n\n1. 통제 기간: 2071.12.01 ~ 2071.12.15\n2. 통제 구역: 훈련관 전역, 본관 3층 이상, 기숙사 면회실\n3. 유의 사항:\n   - 해당 기간 동안 외부인의 교내 출입 및 생도 면회가 전면 통제됩니다.\n   - 사전에 허가받지 않은 물품의 반입이 엄격히 금지됩니다.\n\n학부모님들과 방문객 여러분의 깊은 양해와 협조 부탁드립니다.\n감사합니다.`
+      },
+      {
+        id: 2,
+        category: "안내",
+        title: "본관 지하 시설 및 제3보관구역 접근 엄격 금지",
+        date: "2071.11.24",
+        content: `[시설 안전 점검 안내]\n\n최근 교내 정기 시설 안전 점검 중 본관 지하 구역 및 제3보관구역의 일부 노후화가 확인되었습니다.\n이에 따라 안전 사고 예방 및 긴급 보수 공사를 위해 해당 구역의 접근을 전면 통제합니다.\n\n- 대상 구역: 본관 지하 1~3층, 제3보관구역 진입로\n- 통제 사유: 시설 노후화에 따른 긴급 보수 및 안전 점검\n- 위반 시 조치: 교칙에 의거하여 벌점 부과 및 징계 조치\n\n생도 여러분의 안전을 위한 조치이오니 적극적인 협조 바랍니다.`
+      },
+      {
+        id: 3,
+        category: "안내",
+        title: "2세대 전략인재 졸업식 참석 제한 안내",
+        date: "2071.11.20",
+        content: `2072년 2월 예정된 제2세대 전략인재 졸업식 진행 방식에 대해 안내드립니다.\n\n최근 국가 보안 등급 상향 조정 및 프로젝트 기밀 유지 지침에 따라,\n금번 졸업식은 외부 인사 및 학부모 초청 없이 교내 행사로 축소 진행될 예정입니다.\n\n졸업식 영상 및 사진은 행사 종료 후 보안 검토를 거쳐 학교 홈페이지를 통해 제한적으로 공개될 예정입니다.\n생도들의 새로운 출발을 멀리서나마 응원해 주시기 바랍니다.`
+      },
+      {
+        id: 4,
+        category: "보도자료",
+        title: "1세대 졸업생, 각 부처 핵심 인재로 맹활약… '성공적인 육성'",
+        date: "2071.11.15",
+        content: `[보도자료] 대한전략사관학교 1세대 졸업생, 국가 안보의 주역으로 우뚝\n\n지난해 졸업한 대한전략사관학교 1세대 전략인재들이 국방부, 정보사령부, 국가안보실 등 주요 부처에 배치되어 괄목할 만한 성과를 내고 있다.\n이들은 유전자 조합을 통해 강화된 신체 능력과 전략적 사고를 바탕으로 기존 인력이 해결하기 어려웠던 난제들을 잇달아 해결하며 '신전략인재 육성 계획'의 실효성을 입증했다.\n\n정부 관계자는 "1세대 졸업생들의 활약은 본 프로젝트의 성공을 보여주는 지표"라며, "앞으로 배출될 2세대, 3세대 인재들에 대한 기대감도 매우 높다"고 밝혔다.`
+      }
+    ];
+
+    const WORLD_DATA = {
+      title: "신전략인재 육성 계획",
+      subtitle: "대한전략사관학교 운영 및 폐기 계획 (대국민 공개용)",
+      description: `2049년 출범 이래, 국가 안보와 미래 전략을 책임져 온 '신전략인재' 양성 기관의 3단계 운영 현황입니다.\n\n현재 본교는 효율적인 국가 예산 운용과 프로젝트의 성공적인 마무리를 위해 신규 선발을 잠정 중단하였으며, 재학 중인 2대(3학년) 및 3대(2학년) 생도들의 안정적인 졸업과 사회 진출에 총력을 기울이고 있습니다.\n\n본 문서는 대국민 알권리 충족을 위해, 보안 규정에 의거하여 공개 가능한 범위 내에서 작성된 일반 열람용 보고서입니다.`,
+      details: [
+        { label: "현재 시점", value: "2071년 11월" },
+        { label: "기관명", value: "대한전략사관학교" },
+        { label: "프로젝트 상태", value: "단계적 종료 (3단계)" },
+        { label: "잔류 인원", value: "2대(3학년), 3대(2학년)" },
+      ]
+    };
+
+    const CHARACTERS = [
+      {
+        id: "baek",
+        code: "SEC_012",
+        name: "백낙영",
+        role: "3학년 A반 / 전술공학",
+        tags: ["학업 최우수", "차석"],
+        achievement: "모의평가 3년 연속 우수",
+        thumb: "https://raw.githubusercontent.com/dimumu/BHG/refs/heads/main/B_websmall.webp",
+        image: "https://raw.githubusercontent.com/dimumu/BHG/refs/heads/main/B_webpro.webp",
+        age: "21세",
+        birth: "10.22",
+        weapon: "스코프 석궁",
+        major: "전술공학",
+        languages: "한국어, 영어, 독일어, 러시아어",
+        visualProfile: ["흑발", "금빛 눈동자", "왼쪽 눈 밑 점", "178cm", "잔선이 굵은 골격", "위압감 있는 체구", "따뜻한 쇠 냄새"],
+        keywords: ["ENFP", "혼돈 중립", "개오바 로맨티스트", "낙장 불입"],
+        analysis: [
+          "조직의 규율은 절대 준수, 그러나 전투 및 사적인 영역에서는 예측 불허한 충동성.",
+          "강박적인 애착과 이중성.",
+          "구소련 군사사 및 전략 서적에 심취."
+        ],
+        behavior: [
+          "심리적 긴장 및 흥분 상태에서 코를 찡긋거리는 무의식적 행동.",
+          "타깃 확정 시 대상의 주변을 집요하게 배회하며 과도한 관찰 시도.",
+          "원거리 무기를 사용함에도 근거리 공격 선호."
+        ],
+        themeColor: "red"
+      },
+      {
+        id: "hyun",
+        code: "THI_027",
+        name: "현금오",
+        role: "2학년 B반 / 전공 미정",
+        tags: ["품행 단정", "고내구력 우수"],
+        achievement: "교내 봉사활동 120시간",
+        thumb: "https://raw.githubusercontent.com/dimumu/BHG/refs/heads/main/H_websmall.webp",
+        image: "https://raw.githubusercontent.com/dimumu/BHG/refs/heads/main/H_webpro.webp",
+        age: "20세",
+        birth: "09.10",
+        weapon: "대형 도끼",
+        major: "미정 (선봉 특화)",
+        languages: "한국어, 영어, 불어",
+        visualProfile: ["밀색 곱슬 장발", "녹색 눈동자", "무테 안경", "170cm", "선이 얇은 체격", "샌달우드 향"],
+        keywords: ["ISTJ", "질서 중립", "선봉장", "백드래프트"],
+        analysis: [
+          "가톨릭 집안에서 성장하여 사고 전반에 신앙이 밑바탕.",
+          "존재 입증에 대한 강박.",
+          "방어적 태도 이면에 타인의 인정과 칭찬을 극도로 갈망."
+        ],
+        behavior: [
+          "전투 시 무리하게 선봉을 고집하며 고내구력 과시.",
+          "논리적으로 합리화 하는 습관과 더불어 긴장하면 말이 빨라짐.",
+          "타인의 평가에 예민하며 집단의 규칙을 준수하려 함."
+        ],
+        themeColor: "emerald"
+      },
+      {
+        id: "heo",
+        code: "FIR_049",
+        name: "허기욱",
+        role: "교관 / 1대 전략인재",
+        tags: ["우수 교관", "1세대 졸업생"],
+        achievement: "대통령 표창 수여 (2070)",
+        thumb: "https://raw.githubusercontent.com/dimumu/BHG/refs/heads/main/G_websmall.webp",
+        image: "https://raw.githubusercontent.com/dimumu/BHG/refs/heads/main/G_webpro.webp",
+        age: "22세",
+        birth: "??.??",
+        weapon: "군용검",
+        major: "전술 지휘 겸임",
+        languages: "-",
+        visualProfile: ["어두운 갈색 머리", "밝은 갈색 눈", "187cm", "근육질", "교관용 회색 제복"],
+        keywords: [],
+        analysis: [],
+        behavior: [],
+        warning: "1세대 졸업생의 정보는 졸업생 개인의 신변 보호를 위해 열람이 제한되어 있습니다.",
+        themeColor: "amber"
+      }
+    ];
+
+    // --- Components ---
+
+    function Badge({ children, color = "red" }) {
+      const colorClasses = {
+        red: "bg-red-50 text-red-700 border-red-200",
+        emerald: "bg-emerald-50 text-emerald-700 border-emerald-200",
+        amber: "bg-amber-50 text-amber-700 border-amber-200",
+        indigo: "bg-indigo-50 text-indigo-700 border-indigo-200",
+        slate: "bg-slate-100 text-slate-700 border-slate-200",
+      };
+
+      return React.createElement(
+        "span",
+        { className: `px-2 py-0.5 text-[11px] font-bold border rounded-full ${colorClasses[color] || colorClasses.red}` },
+        children
+      );
+    }
+
+    function QuickLink({ icon: Icon, label, onClick }) {
+      return React.createElement(
+        "div",
+        { onClick: onClick, className: "flex flex-col items-center gap-2 group cursor-pointer" },
+        React.createElement(
+          "div",
+          { className: "w-14 h-14 md:w-16 md:h-16 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-600 group-hover:border-red-500 group-hover:text-red-600 group-hover:shadow-md transition-all" },
+          React.createElement(Icon, { className: "w-6 h-6 md:w-7 md:h-7" })
+        ),
+        React.createElement(
+          "span",
+          { className: "text-xs md:text-sm font-medium text-gray-700 group-hover:text-red-700" },
+          label
+        )
+      );
+    }
+
+    function AccordionItem({ title, children }) {
+      const [isOpen, setIsOpen] = useState(false);
+      return React.createElement(
+        "div",
+        { className: "border-b border-gray-100 last:border-0" },
+        React.createElement(
+          "button",
+          { 
+            onClick: () => setIsOpen(!isOpen), 
+            className: "w-full py-3 flex justify-between items-center text-left font-bold text-gray-800 hover:text-blue-800 transition-colors" 
+          },
+          React.createElement(
+            "span",
+            { className: "flex items-center gap-2 text-sm" },
+            React.createElement("span", { className: "text-blue-600" }, isOpen ? '-' : '+'),
+            " ",
+            title
+          ),
+          React.createElement(ChevronDown, { className: `w-4 h-4 text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}` })
+        ),
+        React.createElement(
+          AnimatePresence,
+          null,
+          isOpen && React.createElement(
+            motion.div,
+            { 
+              initial: { height: 0, opacity: 0 }, 
+              animate: { height: 'auto', opacity: 1 }, 
+              exit: { height: 0, opacity: 0 }, 
+              className: "overflow-hidden" 
+            },
+            React.createElement(
+              "div",
+              { className: "pb-4 pl-2 text-sm text-gray-600 leading-relaxed space-y-3 bg-gray-50/50 rounded-lg p-3 mb-2" },
+              children
+            )
+          )
+        )
+      );
+    }
+
+    function App() {
+      const [selectedChar, setSelectedChar] = useState(null);
+      const [selectedNotice, setSelectedNotice] = useState(null);
+      const [isWorldModalOpen, setIsWorldModalOpen] = useState(false);
+      const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
+      const [toastMessage, setToastMessage] = useState(null);
+
+      const handleShowToast = (message) => {
+        setToastMessage(message);
+        setTimeout(() => setToastMessage(null), 3000);
+      };
+
+      return React.createElement(
+        "div",
+        { className: "min-h-screen bg-white text-gray-900 font-sans selection:bg-red-100 relative" },
+        
+        /* Toast Notification */
+        React.createElement(
+          AnimatePresence,
+          null,
+          toastMessage && React.createElement(
+            motion.div,
+            { 
+              initial: { opacity: 0, y: -50, x: "-50%" }, 
+              animate: { opacity: 1, y: 0, x: "-50%" }, 
+              exit: { opacity: 0, y: -50, x: "-50%" },
+              className: "fixed top-8 left-1/2 z-[60] bg-gray-800/90 backdrop-blur text-white px-6 py-3 rounded-full shadow-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap border border-gray-700"
+            },
+            React.createElement(Info, { className: "w-4 h-4 text-yellow-400" }),
+            toastMessage
+          )
+        ),
+
+        /* 1. Top Utility Bar */
+        React.createElement(
+          "div",
+          { className: "bg-gray-100 border-b border-gray-200 text-[10px] md:text-[11px] text-gray-500" },
+          React.createElement(
+            "div",
+            { className: "max-w-5xl mx-auto px-4 h-8 flex items-center justify-end gap-2 md:gap-3" },
+            React.createElement("a", { href: "#", className: "hover:text-gray-900" }, "로그인"),
+            React.createElement("span", { className: "text-gray-300" }, "|"),
+            React.createElement("a", { href: "#", className: "hover:text-gray-900" }, "회원가입"),
+            React.createElement("span", { className: "text-gray-300" }, "|"),
+            React.createElement("a", { href: "#", className: "hover:text-gray-900" }, "사이트맵"),
+            React.createElement("span", { className: "text-gray-300" }, "|"),
+            React.createElement(
+              "div",
+              { className: "flex items-center gap-1" },
+              React.createElement("span", null, "글자크기"),
+              React.createElement("button", { className: "w-4 h-4 flex items-center justify-center border border-gray-300 rounded bg-white hover:bg-gray-200" }, React.createElement(Plus, { className: "w-2.5 h-2.5" })),
+              React.createElement("button", { className: "w-4 h-4 flex items-center justify-center border border-gray-300 rounded bg-white hover:bg-gray-200" }, React.createElement(Minus, { className: "w-2.5 h-2.5" }))
+            ),
+            React.createElement("span", { className: "text-gray-300" }, "|"),
+            React.createElement(
+              "a",
+              { href: "#", className: "hover:text-gray-900 flex items-center gap-1" },
+              React.createElement(Download, { className: "w-3 h-3" }),
+              " 뷰어 다운로드"
+            )
+          )
+        ),
+
+        /* 2. Main Header */
+        React.createElement(
+          "header",
+          { className: "bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm" },
+          React.createElement(
+            "div",
+            { className: "max-w-5xl mx-auto px-4 h-16 md:h-20 flex items-center justify-between" },
+            React.createElement(
+              "div",
+              { className: "flex items-center gap-3" },
+              React.createElement(
+                "div",
+                { className: "w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center text-white shadow-md" },
+                React.createElement(Shield, { className: "w-6 h-6" })
+              ),
+              React.createElement(
+                "div",
+                null,
+                React.createElement(
+                  "h1",
+                  { className: "text-lg md:text-xl font-bold text-gray-900 tracking-tight leading-none" },
+                  "대한전략사관학교"
+                ),
+                React.createElement(
+                  "p",
+                  { className: "text-[10px] md:text-xs text-gray-500 font-medium mt-1 tracking-wide" },
+                  "KOREA STRATEGIC MILITARY ACADEMY"
+                )
+              )
+            ),
+            React.createElement(
+              "nav",
+              { className: "hidden md:flex items-center gap-8 text-sm font-bold text-gray-700" },
+              React.createElement("a", { href: "#", className: "hover:text-red-600 transition-colors" }, "학교 소개"),
+              React.createElement("a", { href: "#", className: "hover:text-red-600 transition-colors" }, "프로젝트 성과(2049~)"),
+              React.createElement("a", { href: "#", className: "text-red-600" }, "생도 생활"),
+              React.createElement("a", { href: "#", className: "hover:text-red-600 transition-colors" }, "대국민 소통")
+            ),
+            React.createElement(
+              "button",
+              { className: "md:hidden p-2 text-gray-600" },
+              React.createElement(Menu, { className: "w-6 h-6" })
+            )
+          )
+        ),
+
+        React.createElement(
+          "main",
+          { className: "max-w-5xl mx-auto p-4 md:p-8 space-y-10" },
+          
+          /* 3. Notice Section */
+          React.createElement(
+            "section",
+            { className: "border-t-2 border-red-600 bg-white shadow-sm" },
+            React.createElement(
+              "div",
+              { className: "flex flex-col" },
+              React.createElement(
+                "div",
+                { className: "bg-red-50 px-6 py-3 border-b border-red-100 flex items-center justify-between" },
+                React.createElement(
+                  "h3",
+                  { className: "text-red-700 font-bold flex items-center gap-2 text-sm md:text-base" },
+                  React.createElement(Megaphone, { className: "w-4 h-4" }),
+                  "공지사항"
+                ),
+                React.createElement(
+                  "button",
+                  { className: "text-xs text-gray-500 hover:text-red-600 flex items-center gap-1" },
+                  React.createElement(Plus, { className: "w-3 h-3" }),
+                  " 더보기"
+                )
+              ),
+              React.createElement(
+                "div",
+                { className: "p-2" },
+                React.createElement(
+                  "div",
+                  { className: "flex flex-col" },
+                  NOTICE_DATA.map((notice) => (
+                    React.createElement(
+                      "div",
+                      { 
+                        key: notice.id, 
+                        className: "flex items-center gap-3 px-4 py-2.5 text-sm cursor-pointer group hover:bg-gray-50 rounded transition-colors", 
+                        onClick: () => setSelectedNotice(notice) 
+                      },
+                      React.createElement(
+                        "span",
+                        { className: `text-[10px] px-1.5 py-0.5 rounded font-bold shrink-0 w-12 text-center ${notice.category === '공지' ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600'}` },
+                        notice.category
+                      ),
+                      React.createElement(
+                        "span",
+                        { className: "text-gray-700 group-hover:underline truncate flex-1" },
+                        notice.title
+                      ),
+                      React.createElement(
+                        "span",
+                        { className: "text-xs text-gray-400 shrink-0 hidden md:block" },
+                        notice.date
+                      )
+                    )
+                  ))
+                )
+              )
+            )
+          ),
+
+          /* 4. Hero Banner */
+          React.createElement(
+            "section",
+            { className: "relative rounded-2xl overflow-hidden bg-gray-900 text-white shadow-xl min-h-[300px] md:h-[380px]" },
+            React.createElement(
+              "div",
+              { className: "absolute inset-0" },
+              React.createElement("img", { src: "https://raw.githubusercontent.com/dimumu/BHG/refs/heads/main/website.webp", alt: "Cadets", className: "w-full h-full object-cover" }),
+              React.createElement("div", { className: "absolute inset-0 bg-slate-900/40" })
+            ),
+            React.createElement(
+              "div",
+              { className: "relative z-10 p-6 md:p-12 h-full flex flex-col justify-center" },
+              React.createElement(
+                "div",
+                { className: "space-y-4 max-w-2xl" },
+                React.createElement(
+                  "div",
+                  { className: "inline-block px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 text-xs font-bold tracking-wider mb-2" },
+                  "2071년 신전략인재 육성 계획"
+                ),
+                React.createElement(
+                  "h2",
+                  { className: "text-2xl md:text-5xl font-bold leading-tight drop-shadow-md" },
+                  React.createElement("span", { className: "block" }, "미래를 선도하는 융합형 인재,"),
+                  React.createElement("span", { className: "block text-yellow-300 mt-1 md:mt-2" }, "대한민국의 든든한 내일입니다.")
+                ),
+                React.createElement(
+                  "p",
+                  { className: "hidden md:block text-blue-100 max-w-xl text-lg opacity-90 font-medium mt-4" },
+                  "대한전략사관학교는 국가 안보와 미래 전략을 책임질 최정예 인재를 양성합니다.\n투명한 운영과 열린 소통으로 국민 여러분과 함께하겠습니다."
+                ),
+                React.createElement(
+                  "div",
+                  { className: "pt-6 flex flex-wrap gap-3" },
+                  React.createElement(
+                    "button",
+                    { 
+                      onClick: () => setIsWorldModalOpen(true),
+                      className: "px-5 py-2.5 md:px-6 md:py-3 bg-white text-blue-900 font-bold rounded-lg hover:bg-blue-50 transition-colors shadow-lg flex items-center gap-2 text-sm md:text-base"
+                    },
+                    React.createElement(FileText, { className: "w-4 h-4" }),
+                    "프로젝트 보고서 열람"
+                  )
+                )
+              ),
+              React.createElement(
+                "div",
+                { className: "mt-6 md:absolute md:top-12 md:right-12 md:mt-0" },
+                React.createElement(
+                  "div",
+                  { className: "bg-white/10 backdrop-blur-md rounded-xl border border-white/20 p-3 md:p-4 text-center shadow-lg inline-block md:block w-full md:w-auto" },
+                  React.createElement("div", { className: "text-[10px] md:text-xs text-blue-100 font-medium mb-1" }, "신전략인재 프로젝트 최종 성과 보고회"),
+                  React.createElement("div", { className: "text-2xl md:text-4xl font-bold text-yellow-400 font-mono tracking-tight" }, "D-412")
+                )
+              )
+            )
+          ),
+
+          /* 5. Quick Links */
+          React.createElement(
+            "section",
+            { className: "py-2" },
+            React.createElement(
+              "div",
+              { className: "bg-gray-50 rounded-xl p-6 border border-gray-100" },
+              React.createElement(
+                "div",
+                { className: "flex flex-wrap justify-around gap-6" },
+                React.createElement(QuickLink, { icon: UserPlus, label: "면회 신청", onClick: () => handleShowToast('현재는 면회 신청 기간이 아닙니다.') }),
+                React.createElement(QuickLink, { icon: CalendarDays, label: "훈련 일정표", onClick: () => setIsScheduleModalOpen(true) }),
+                React.createElement(QuickLink, { icon: HeartHandshake, label: "생도 심리 상담소", onClick: () => handleShowToast('현재는 상담소 운영 기간이 아닙니다.') }),
+                React.createElement(QuickLink, { icon: FileSearch, label: "정보공개 청구", onClick: () => handleShowToast('현재는 정보공개 청구 기간이 아닙니다.') }),
+                React.createElement(QuickLink, { icon: Coins, label: "후원금 안내", onClick: () => handleShowToast('현재 사이트 정비 중입니다.') })
+              )
+            )
+          ),
+
+          /* 6. Monthly Best Cadets */
+          React.createElement(
+            "section",
+            null,
+            React.createElement(
+              "div",
+              { className: "flex items-center justify-between mb-6" },
+              React.createElement(
+                "div",
+                { className: "flex items-center gap-2" },
+                React.createElement("div", { className: "w-1 h-6 bg-red-600 rounded-full" }),
+                React.createElement("h3", { className: "text-xl font-bold text-gray-900" }, "이달의 모범 생도"),
+                React.createElement("span", { className: "text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded" }, "2071년 11월 기준")
+              ),
+              React.createElement(
+                "a",
+                { href: "#", className: "text-sm font-bold text-gray-500 hover:text-red-600 flex items-center gap-1" },
+                "더보기 ",
+                React.createElement(ChevronRight, { className: "w-4 h-4" })
+              )
+            ),
+            React.createElement(
+              "div",
+              { className: "grid gap-4" },
+              CHARACTERS.map((char) => (
+                React.createElement(
+                  motion.div,
+                  {
+                    key: char.id,
+                    layoutId: `card-${char.id}`,
+                    onClick: () => setSelectedChar(char),
+                    whileHover: { y: -2 },
+                    className: "group cursor-pointer bg-white border border-gray-200 hover:border-red-300 hover:shadow-lg rounded-xl p-5 flex items-center gap-5 transition-all"
+                  },
+                  React.createElement(
+                    "div",
+                    { className: "relative w-20 h-20 rounded-full overflow-hidden border-2 border-gray-100 group-hover:border-red-100 shrink-0 shadow-sm" },
+                    React.createElement("img", { src: char.thumb, alt: char.name, className: "w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" })
+                  ),
+                  React.createElement(
+                    "div",
+                    { className: "flex-1 min-w-0" },
+                    React.createElement(
+                      "div",
+                      { className: "flex flex-wrap items-center gap-2 mb-1.5" },
+                      React.createElement(
+                        "h3",
+                        { className: "text-lg font-bold text-gray-900 group-hover:text-red-700 transition-colors" },
+                        char.name
+                      ),
+                      React.createElement(
+                        "div",
+                        { className: "flex gap-1" },
+                        char.tags.map((tag, idx) => React.createElement(Badge, { key: idx, color: char.themeColor }, tag))
+                      )
+                    ),
+                    React.createElement(
+                      "p",
+                      { className: "text-sm text-gray-500 font-medium truncate mb-2" },
+                      char.role
+                    ),
+                    React.createElement(
+                      "div",
+                      { className: "flex items-center gap-1.5 text-xs text-gray-400 group-hover:text-red-600/80 transition-colors" },
+                      React.createElement(Award, { className: "w-3.5 h-3.5" }),
+                      React.createElement("span", { className: "font-medium" }, char.achievement)
+                    )
+                  ),
+                  React.createElement(
+                    "div",
+                    { className: "hidden md:flex flex-col items-center justify-center gap-1 text-gray-300 group-hover:text-red-200 transition-colors" },
+                    React.createElement(Award, { className: "w-8 h-8" })
+                  )
+                )
+              ))
+            )
+          )
+        ),
+
+        /* 7. Footer */
+        React.createElement(
+          "footer",
+          { className: "bg-gray-50 border-t border-gray-200 py-12 mt-12" },
+          React.createElement(
+            "div",
+            { className: "max-w-5xl mx-auto px-4 text-center" },
+            React.createElement(
+              "div",
+              { className: "flex justify-center gap-6 text-sm text-gray-500 font-medium mb-6" },
+              React.createElement("a", { href: "#", className: "hover:text-gray-900" }, "개인정보처리방침"),
+              React.createElement("a", { href: "#", className: "hover:text-gray-900" }, "이용약관"),
+              React.createElement("a", { href: "#", className: "hover:text-gray-900" }, "저작권정책"),
+              React.createElement("a", { href: "#", className: "hover:text-gray-900" }, "찾아오시는 길")
+            ),
+            React.createElement(
+              "div",
+              { className: "text-xs text-gray-400 space-y-1 mb-6" },
+              React.createElement("p", null, "대한전략사관학교 | 대표전화: 02-0000-0000 | 팩스: 02-0000-0001"),
+              React.createElement("p", null, "주소: 대한민국 어딘가 보안 구역 내"),
+              React.createElement("p", { className: "mt-4 font-bold opacity-50" }, "COPYRIGHT © 2071 KOREA STRATEGIC MILITARY ACADEMY. ALL RIGHTS RESERVED.")
+            ),
+            React.createElement(
+              "p",
+              { className: "text-[10px] text-gray-300 tracking-widest" },
+              "※ 본 기관은 생도들의 '안전한 졸업'을 최우선으로 보장합니다."
+            )
+          )
+        ),
+
+        /* --- Modals --- */
+        React.createElement(
+          AnimatePresence,
+          null,
+          
+          /* Schedule Modal */
+          isScheduleModalOpen && React.createElement(
+            motion.div,
+            { 
+              initial: { opacity: 0 }, 
+              animate: { opacity: 1 }, 
+              exit: { opacity: 0 }, 
+              className: "fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm",
+              onClick: () => setIsScheduleModalOpen(false)
+            },
+            React.createElement(
+              motion.div,
+              { 
+                initial: { scale: 0.95, opacity: 0, y: 20 }, 
+                animate: { scale: 1, opacity: 1, y: 0 }, 
+                exit: { scale: 0.95, opacity: 0, y: 20 }, 
+                onClick: (e) => e.stopPropagation(),
+                className: "bg-white w-full max-w-sm rounded-xl overflow-hidden shadow-2xl"
+              },
+              React.createElement(
+                "div",
+                { className: "bg-red-700 p-4 flex justify-between items-center" },
+                React.createElement(
+                  "div",
+                  { className: "text-white font-bold flex items-center gap-2" },
+                  React.createElement(CalendarCheck, { className: "w-5 h-5" }),
+                  "2071학년도 주요 학사 일정"
+                ),
+                React.createElement(
+                  "button",
+                  { onClick: () => setIsScheduleModalOpen(false), className: "text-white/80 hover:text-white" },
+                  React.createElement(X, { className: "w-5 h-5" })
+                )
+              ),
+              React.createElement(
+                "div",
+                { className: "p-6" },
+                React.createElement(
+                  "div",
+                  { className: "space-y-4" },
+                  [
+                    { month: "3월", event: "등급 및 기숙사 재배치" },
+                    { month: "6월", event: "중간평가" },
+                    { month: "12월", event: "기말평가" },
+                    { month: "2월", event: "2대 졸업식" }
+                  ].map((item, idx) => React.createElement(
+                    "div",
+                    { key: idx, className: "flex items-center gap-4 p-3 bg-gray-50 rounded border border-gray-100" },
+                    React.createElement("div", { className: "w-12 text-center font-bold text-red-600 text-lg" }, item.month),
+                    React.createElement("div", { className: "text-sm font-medium text-gray-700" }, item.event)
+                  ))
+                )
+              ),
+              React.createElement(
+                "div",
+                { className: "bg-gray-50 p-3 text-center border-t border-gray-200" },
+                React.createElement(
+                  "button",
+                  { 
+                    onClick: () => setIsScheduleModalOpen(false),
+                    className: "px-4 py-2 bg-white border border-gray-300 rounded text-sm font-medium hover:bg-gray-50"
+                  },
+                  "닫기"
+                )
+              )
+            )
+          ),
+
+          /* Notice Modal */
+          selectedNotice && React.createElement(
+            motion.div,
+            { 
+              initial: { opacity: 0 }, 
+              animate: { opacity: 1 }, 
+              exit: { opacity: 0 }, 
+              className: "fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm",
+              onClick: () => setSelectedNotice(null)
+            },
+            React.createElement(
+              motion.div,
+              { 
+                initial: { scale: 0.95, opacity: 0, y: 20 }, 
+                animate: { scale: 1, opacity: 1, y: 0 }, 
+                exit: { scale: 0.95, opacity: 0, y: 20 }, 
+                onClick: (e) => e.stopPropagation(),
+                className: "bg-white w-full max-w-lg max-h-[90vh] flex flex-col rounded-xl overflow-hidden shadow-2xl"
+              },
+              React.createElement(
+                "div",
+                { className: "bg-gray-100 p-4 border-b border-gray-200 flex justify-between items-center shrink-0" },
+                React.createElement("span", { className: "text-sm font-bold text-gray-600" }, "공지사항 상세"),
+                React.createElement(
+                  "button",
+                  { onClick: () => setSelectedNotice(null), className: "text-gray-400 hover:text-gray-900" },
+                  React.createElement(X, { className: "w-5 h-5" })
+                )
+              ),
+              React.createElement(
+                "div",
+                { className: "p-6 overflow-y-auto" },
+                React.createElement(
+                  "div",
+                  { className: "mb-4" },
+                  React.createElement(
+                    "span",
+                    { className: "inline-block px-2 py-0.5 bg-red-100 text-red-700 text-xs font-bold rounded mb-2" },
+                    selectedNotice.category
+                  ),
+                  React.createElement("h3", { className: "text-lg font-bold text-gray-900 leading-snug" }, selectedNotice.title),
+                  React.createElement("p", { className: "text-xs text-gray-400 mt-2" }, selectedNotice.date)
+                ),
+                React.createElement(
+                  "div",
+                  { className: "text-sm text-gray-700 leading-relaxed whitespace-pre-line bg-gray-50 p-4 rounded border border-gray-100" },
+                  selectedNotice.content
+                )
+              ),
+              React.createElement(
+                "div",
+                { className: "bg-gray-50 p-3 text-center border-t border-gray-200 shrink-0" },
+                React.createElement(
+                  "button",
+                  { 
+                    onClick: () => setSelectedNotice(null),
+                    className: "px-4 py-2 bg-white border border-gray-300 rounded text-sm font-medium hover:bg-gray-50"
+                  },
+                  "닫기"
+                )
+              )
+            )
+          ),
+
+          /* World Modal */
+          isWorldModalOpen && React.createElement(
+            motion.div,
+            { 
+              initial: { opacity: 0 }, 
+              animate: { opacity: 1 }, 
+              exit: { opacity: 0 }, 
+              className: "fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm",
+              onClick: () => setIsWorldModalOpen(false)
+            },
+            React.createElement(
+              motion.div,
+              { 
+                initial: { scale: 0.95, opacity: 0, y: 20 }, 
+                animate: { scale: 1, opacity: 1, y: 0 }, 
+                exit: { scale: 0.95, opacity: 0, y: 20 }, 
+                onClick: (e) => e.stopPropagation(),
+                className: "bg-white w-full max-w-2xl max-h-[90vh] flex flex-col rounded-xl overflow-hidden shadow-2xl"
+              },
+              React.createElement(
+                "div",
+                { className: "bg-red-700 p-4 flex justify-between items-center shrink-0" },
+                React.createElement(
+                  "div",
+                  { className: "text-white font-bold flex items-center gap-2" },
+                  React.createElement(FileText, { className: "w-5 h-5" }),
+                  "프로젝트 상세 보고서"
+                ),
+                React.createElement(
+                  "button",
+                  { onClick: () => setIsWorldModalOpen(false), className: "text-white/80 hover:text-white" },
+                  React.createElement(X, { className: "w-6 h-6" })
+                )
+              ),
+              React.createElement(
+                "div",
+                { className: "p-6 md:p-8 overflow-y-auto" },
+                React.createElement(
+                  "div",
+                  { className: "mb-6" },
+                  React.createElement(Badge, { color: "red" }, "대외비 (공개용)"),
+                  React.createElement("h2", { className: "text-2xl font-bold text-gray-900 mt-2" }, WORLD_DATA.title)
+                ),
+                React.createElement(
+                  "div",
+                  { className: "space-y-6 text-gray-700 leading-relaxed" },
+                  React.createElement(
+                    "div",
+                    { className: "p-5 bg-gray-50 rounded border border-gray-200 text-sm whitespace-pre-line font-medium" },
+                    WORLD_DATA.description
+                  ),
+                  React.createElement(
+                    "div",
+                    { className: "grid grid-cols-2 gap-4 bg-white" },
+                    WORLD_DATA.details.map((detail, idx) => React.createElement(
+                      "div",
+                      { key: idx, className: "border-l-4 border-red-700 pl-3 py-1" },
+                      React.createElement("div", { className: "text-xs text-gray-500 font-bold uppercase mb-1" }, detail.label),
+                      React.createElement("div", { className: "text-gray-900 font-semibold" }, detail.value)
+                    ))
+                  ),
+                  React.createElement(
+                    "div",
+                    { className: "mt-6 border-t border-gray-200 pt-4" },
+                    React.createElement("h3", { className: "text-sm font-bold text-gray-900 mb-2" }, "▶ 신전략인재 세부 운영 지표 (대국민 요약본)"),
+                    React.createElement(
+                      "div",
+                      { className: "rounded-lg overflow-hidden" },
+                      React.createElement(
+                        AccordionItem,
+                        { title: "인재 발굴 및 생애주기별 맞춤 육성" },
+                        React.createElement("p", null, React.createElement("span", { className: "font-bold text-gray-700" }, "기초 육성 (0~18세):"), " 엄격한 심사를 거친 민간 위탁 가정 배정 및 영재 전용 교육기관 통학 지원."),
+                        React.createElement("p", null, React.createElement("span", { className: "font-bold text-gray-700" }, "심화 통합 (19세~):"), " 본교 입소 및 전원 기숙사 편입. 최상위 신체 능력과 압도적 지능을 바탕으로 한 군사·경제·정보·외교 통합 교육 실시."),
+                        React.createElement("p", { className: "text-xs text-gray-500 bg-gray-100 p-2 rounded" }, "※ 유전적 특이사항: 프로젝트의 특수성 및 정보 보안을 위해 생도 전원 2세 출산이 불가하도록 사전 조치 완료. (안전한 유전자 관리를 위한 국가 통제 사항)")
+                      ),
+                      React.createElement(
+                        AccordionItem,
+                        { title: "철저한 성과주의 기반의 평가 시스템" },
+                        React.createElement("p", null, React.createElement("span", { className: "font-bold text-gray-700" }, "학년 편성:"), " 학년별 50명 정원. A등급(10명), B등급(30명), C등급(10명)으로 매년 철저한 성과주의 재편성."),
+                        React.createElement("p", null, React.createElement("span", { className: "font-bold text-gray-700" }, "실기 중심 평가:"), " 단순 필기 넘어, 1:1 전술 토너먼트 및 4인 팀전 총력전 등 실전형 평가 합산. (세부 전공: 경제전략, 정치·외교, 전술공학, 사이버전략)"),
+                        React.createElement("p", { className: "text-xs text-red-600/80 bg-red-50 p-2 rounded" }, "※ 주의 사항: 3년 연속 C등급 평가를 받은 대상자는 본교 졸업 기준 미달로 간주하여 ", React.createElement("span", { className: "text-gray-300" }, "'타 부처 비공개 전출(열람 불가)'"), " 처리.")
+                      ),
+                      React.createElement(
+                        AccordionItem,
+                        { title: "투명한 생활 환경 및 정서 지원" },
+                        React.createElement("p", null, React.createElement("span", { className: "font-bold text-gray-700" }, "안전 및 복지:"), " 최신식 2인 1실 기숙사 제공 및 교내 전역 24시간 안전 관리 시스템(CCTV) 가동."),
+                        React.createElement("p", null, React.createElement("span", { className: "font-bold text-gray-700" }, "자율성 보장:"), " 고강도 훈련으로 인한 스트레스 완화 및 정서적 안정을 위해, 교내 생도 간의 교제 및 스킨십 전면 자율화. (상기 명시된 유전적 특성상 추가적 제한 불필요)"),
+                        React.createElement("p", null, React.createElement("span", { className: "font-bold text-gray-700" }, "외부 소통:"), " 정기 외출 시 가족 접견 완벽 지원. 제한 없는 전화 통화 및 안전망이 확보된 사내 인터넷 제공.")
+                      ),
+                      React.createElement(
+                        AccordionItem,
+                        { title: "성공적인 사회 진출 보장" },
+                        React.createElement("p", null, React.createElement("span", { className: "font-bold text-gray-700" }, "밀착 멘토링:"), " 사회 각계 핵심 부처에서 맹활약 중인 '1세대 졸업생' 중 소수를 실전 교관으로 초빙하여 끈끈한 유대감 형성."),
+                        React.createElement("p", null, React.createElement("span", { className: "font-bold text-gray-700" }, "진로 보장:"), " 매년 2월 중순 대국민 졸업식을 통해 우수 인재 배출. 졸업 생도는 국가 이익에 반하지 않는 선에서 100% 희망 진로 배치 보장.")
+                      )
+                    )
+                  )
+                )
+              )
+            )
+          ),
+
+          /* Character Modal */
+          selectedChar && React.createElement(
+            motion.div,
+            { 
+              initial: { opacity: 0 }, 
+              animate: { opacity: 1 }, 
+              exit: { opacity: 0 }, 
+              className: "fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm",
+              onClick: () => setSelectedChar(null)
+            },
+            React.createElement(
+              motion.div,
+              { 
+                layoutId: `card-${selectedChar.id}`,
+                onClick: (e) => e.stopPropagation(),
+                className: "bg-white w-full max-w-4xl h-[85vh] md:h-auto md:max-h-[85vh] rounded-xl overflow-hidden shadow-2xl flex flex-col md:flex-row"
+              },
+             /* Image Section */
+              React.createElement(
+                "div",
+                { className: "w-full md:w-2/5 bg-gray-100 relative shrink-0 flex flex-col" },
+                React.createElement(
+                  "div",
+                  { className: "aspect-[3/4] md:aspect-auto flex-1 relative overflow-hidden group border-b md:border-b-0 md:border-r border-gray-200" },
+                  React.createElement("img", { src: selectedChar.image, alt: selectedChar.name, className: "absolute inset-0 w-full h-full object-cover object-top" }),
+                  React.createElement("div", { className: "absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" }),
+                  React.createElement(
+                    "div",
+                    { className: "absolute bottom-0 left-0 p-6 w-full text-white" },
+                    React.createElement(
+                      "div",
+                      { className: "flex gap-1 mb-2" },
+                      selectedChar.tags.map((tag, idx) => React.createElement("span", { key: idx, className: "inline-block px-2 py-0.5 bg-red-600 text-[10px] font-bold rounded" }, tag))
+                    ),
+                    React.createElement("h2", { className: "text-3xl font-bold mb-1" }, selectedChar.name),
+                    React.createElement("p", { className: "text-gray-200 font-medium text-sm opacity-90" }, selectedChar.role)
+                  )
+                ),
+                React.createElement(
+                  "button",
+                  { onClick: () => setSelectedChar(null), className: "absolute top-4 right-4 p-2 bg-black/20 backdrop-blur-sm text-white rounded-full md:hidden z-10" },
+                  React.createElement(X, { className: "w-6 h-6" })
+                )
+              ),
+              /* Info Section */
+              React.createElement(
+                "div",
+                { className: "p-6 md:p-8 bg-white md:overflow-y-auto md:flex-1" },
+                React.createElement(
+                  "div",
+                  { className: "hidden md:flex justify-between items-start mb-6 border-b border-gray-100 pb-4" },
+                  React.createElement(
+                    "div",
+                    { className: "flex items-center gap-2" },
+                    React.createElement(Fingerprint, { className: "w-5 h-5 text-gray-400" }),
+                    React.createElement("span", { className: "text-xs font-bold text-gray-500 uppercase tracking-widest" }, `관리 번호: ${selectedChar.code}`)
+                  ),
+                  React.createElement(
+                    "button",
+                    { onClick: () => setSelectedChar(null), className: "p-2 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-900 transition-colors" },
+                    React.createElement(X, { className: "w-6 h-6" })
+                  )
+                ),
+                React.createElement(
+                  "div",
+                  { className: "md:hidden flex items-center gap-2 mb-6 border-b border-gray-100 pb-4" },
+                  React.createElement(Fingerprint, { className: "w-5 h-5 text-gray-400" }),
+                  React.createElement("span", { className: "text-xs font-bold text-gray-500 uppercase tracking-widest" }, `관리 번호: ${selectedChar.code}`)
+                ),
+                React.createElement(
+                  "div",
+                  { className: "space-y-8" },
+                  /* Basic Stats */
+                  React.createElement(
+                    "div",
+                    { className: "grid grid-cols-2 gap-4" },
+                    React.createElement(
+                      "div",
+                      { className: "bg-gray-50 p-4 rounded border border-gray-200" },
+                      React.createElement("div", { className: "text-xs text-gray-500 font-bold mb-1" }, "나이 / 생일"),
+                      React.createElement("div", { className: "font-semibold text-gray-900" }, `${selectedChar.age} (${selectedChar.birth})`)
+                    ),
+                    React.createElement(
+                      "div",
+                      { className: "bg-gray-50 p-4 rounded border border-gray-200" },
+                      React.createElement("div", { className: "text-xs text-gray-500 font-bold mb-1" }, "주무기"),
+                      React.createElement("div", { className: "font-semibold text-gray-900" }, selectedChar.weapon)
+                    ),
+                    React.createElement(
+                      "div",
+                      { className: "bg-gray-50 p-4 rounded border border-gray-200" },
+                      React.createElement("div", { className: "text-xs text-gray-500 font-bold mb-1" }, "소속 학과"),
+                      React.createElement("div", { className: "font-semibold text-gray-900 text-sm" }, selectedChar.role)
+                    ),
+                    React.createElement(
+                      "div",
+                      { className: "bg-gray-50 p-4 rounded border border-gray-200" },
+                      React.createElement("div", { className: "text-xs text-gray-500 font-bold mb-1" }, "습득 언어"),
+                      React.createElement("div", { className: "font-semibold text-gray-900 text-sm" }, selectedChar.languages)
+                    )
+                  ),
+                  /* Visual Profile */
+                  React.createElement(
+                    "div",
+                    null,
+                    React.createElement(
+                      "h3",
+                      { className: "text-sm font-bold text-gray-900 uppercase tracking-tight mb-3 flex items-center gap-2" },
+                      React.createElement(User, { className: "w-4 h-4 text-red-600" }),
+                      "VISUAL PROFILE"
+                    ),
+                    React.createElement(
+                      "div",
+                      { className: "flex flex-wrap gap-2" },
+                      selectedChar.visualProfile.map((tag, idx) => React.createElement("span", { key: idx, className: "px-2 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded border border-gray-200" }, tag))
+                    )
+                  ),
+                  /* Psycho-Analysis */
+                  selectedChar.keywords.length > 0 && React.createElement(
+                    "div",
+                    null,
+                    React.createElement(
+                      "h3",
+                      { className: "text-sm font-bold text-gray-900 uppercase tracking-tight mb-3 flex items-center gap-2" },
+                      React.createElement(Activity, { className: "w-4 h-4 text-red-600" }),
+                      "PSYCHO-ANALYSIS"
+                    ),
+                    React.createElement(
+                      "div",
+                      { className: "flex flex-wrap gap-2 mb-3" },
+                      selectedChar.keywords.map((tag, idx) => React.createElement("span", { key: idx, className: "px-2 py-1 bg-red-50 text-red-700 text-xs font-bold rounded border border-red-100" }, tag))
+                    ),
+                    React.createElement(
+                      "ul",
+                      { className: "space-y-2" },
+                      selectedChar.analysis.map((item, idx) => React.createElement(
+                        "li",
+                        { key: idx, className: "flex items-start gap-3 text-sm text-gray-600 font-medium" },
+                        React.createElement("span", { className: "w-1.5 h-1.5 rounded-full bg-gray-400 mt-1.5 shrink-0" }),
+                        item
+                      ))
+                    )
+                  ),
+                  /* Behavior Patterns */
+                  selectedChar.behavior.length > 0 && React.createElement(
+                    "div",
+                    null,
+                    React.createElement(
+                      "h3",
+                      { className: "text-sm font-bold text-gray-900 uppercase tracking-tight mb-3 flex items-center gap-2" },
+                      React.createElement(FileText, { className: "w-4 h-4 text-red-600" }),
+                      "BEHAVIOR PATTERNS"
+                    ),
+                    React.createElement(
+                      "div",
+                      { className: "bg-gray-50 rounded-lg p-4 border border-gray-200 text-sm text-gray-600 space-y-2 font-medium" },
+                      selectedChar.behavior.map((item, idx) => React.createElement(
+                        "div",
+                        { key: idx, className: "flex gap-2" },
+                        React.createElement("span", { className: "text-gray-400 font-bold" }, `[${idx + 1}]`),
+                        React.createElement("span", null, item)
+                      ))
+                    )
+                  ),
+                  /* Warning */
+                  selectedChar.warning && React.createElement(
+                    "div",
+                    { className: "bg-red-50 border border-red-100 rounded p-4 flex items-start gap-3" },
+                    React.createElement(AlertTriangle, { className: "w-5 h-5 text-red-600 shrink-0" }),
+                    React.createElement("span", { className: "text-sm text-red-700 font-bold tracking-tight" }, selectedChar.warning)
+                  )
+                )
+              )
+            )
+          )
+        )
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(React.createElement(App));
+  </script>
+</body>
+</html>
